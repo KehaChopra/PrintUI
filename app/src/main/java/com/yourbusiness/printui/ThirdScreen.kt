@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape // <-- ADDED
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -57,7 +58,6 @@ fun PrintOrderScreen(
     var documents by remember { mutableStateOf<List<DocumentSettings>>(emptyList()) }
     val pagerState = rememberPagerState(pageCount = { documents.size })
 
-    // File picker launcher - supports multiple files
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris: List<Uri> ->
@@ -72,7 +72,6 @@ fun PrintOrderScreen(
         }
     }
 
-    // Calculate total amount across all documents
     val totalAmount = remember(documents) {
         documents.sumOf { doc ->
             val bw = doc.bwPages.toIntOrNull() ?: 0
@@ -81,7 +80,6 @@ fun PrintOrderScreen(
         }
     }
 
-    // SHOW UPLOAD SCREEN if no documents
     if (documents.isEmpty()) {
         UploadScreen(
             shopName = shopName,
@@ -90,7 +88,6 @@ fun PrintOrderScreen(
             onUploadClick = { filePickerLauncher.launch("application/pdf") }
         )
     } else {
-        // SHOW DOCUMENTS WITH SETTINGS
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -101,7 +98,6 @@ fun PrintOrderScreen(
                     .padding(bottom = 80.dp),
             ) {
 
-                // HEADER CARD - Back button and Shop Name
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -133,7 +129,6 @@ fun PrintOrderScreen(
                                 )
                             }
 
-                            // Small History Button
                             IconButton(
                                 onClick = onHistoryClick,
                                 modifier = Modifier.size(40.dp)
@@ -149,7 +144,6 @@ fun PrintOrderScreen(
 
                         Spacer(Modifier.height(16.dp))
 
-                        // ADD MORE FILES BUTTON
                         OutlinedButton(
                             onClick = { filePickerLauncher.launch("application/pdf") },
                             modifier = Modifier
@@ -180,7 +174,7 @@ fun PrintOrderScreen(
 
                 Spacer(Modifier.height(10.dp))
 
-                // Page indicator
+                // ---------- PAGE NUMBER ----------
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -194,9 +188,30 @@ fun PrintOrderScreen(
                     )
                 }
 
+                // ---------- DOT INDICATORS ADDED HERE ----------
+                Spacer(Modifier.height(6.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(documents.size) { index ->
+                        val selected = pagerState.currentPage == index
+
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(if (selected) 10.dp else 8.dp)
+                                .background(
+                                    color = if (selected) BlueBtn else Color(0xFFD1D5DB),
+                                    shape = CircleShape
+                                )
+                        )
+                    }
+                }
+
                 Spacer(Modifier.height(8.dp))
 
-                // Horizontal Pager for documents with scroll
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -222,7 +237,6 @@ fun PrintOrderScreen(
                 }
             }
 
-            // BOTTOM PAY NOW BUTTON - Fixed at bottom with total
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
