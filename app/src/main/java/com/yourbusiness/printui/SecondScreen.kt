@@ -47,7 +47,7 @@ fun SelectShopScreen(onShopSelected: (String) -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Brush.verticalGradient(
+                Brush.verticalGradient( // smooth blending of color
                     colors = listOf(ScreenTop, ScreenBottom)
                 )
             )
@@ -199,19 +199,24 @@ fun ShopCard(
                 )
             }
 
-            Spacer(Modifier.height(18.dp))
+            // Only show services section if shop is open
+            if (isOpen) {
+                Spacer(Modifier.height(18.dp))
 
-            /* ---------- SERVICES ---------- */
-            Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ServiceChip("B&W Printing", bwAvailable)
-                ServiceChip("Color Printing", colorAvailable)
+                /* ---------- SERVICES ---------- */
+                Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                    ServiceChip("B&W Printing", bwAvailable)
+                    ServiceChip("Color Printing", colorAvailable)
+                }
+
+                Spacer(Modifier.height(18.dp))
+
+                Divider(color = Color(0xFFE5E7EB))
+
+                Spacer(Modifier.height(14.dp))
+            } else {
+                Spacer(Modifier.height(18.dp))
             }
-
-            Spacer(Modifier.height(18.dp))
-
-            Divider(color = Color(0xFFE5E7EB))
-
-            Spacer(Modifier.height(14.dp))
 
             /* ---------- FOOTER ---------- */
             Row(

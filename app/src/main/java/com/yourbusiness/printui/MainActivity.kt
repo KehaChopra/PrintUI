@@ -30,6 +30,8 @@ fun PrintAppNavigation() {
         navController = navController,
         startDestination = "select_shop"
     ) {
+
+        /* ---------- SCREEN 1 ---------- */
         composable("select_shop") {
             SelectShopScreen(
                 onShopSelected = { shopName ->
@@ -38,12 +40,38 @@ fun PrintAppNavigation() {
             )
         }
 
+        /* ---------- SCREEN 2 ---------- */
         composable("print_order/{shopName}") { backStackEntry ->
             val shopName = backStackEntry.arguments?.getString("shopName") ?: ""
+
             PrintOrderScreen(
                 shopName = shopName,
                 onBackPressed = {
                     navController.popBackStack()
+                },
+                onPayNowClick = { orderId, eta, amount ->
+                    navController.navigate("payment_success/$orderId/$eta/$amount")
+                },
+                onHistoryClick = {
+                    // TODO: Navigate to history screen when implemented
+                }
+            )
+        }
+
+        /* ---------- SCREEN 3 ---------- */
+        composable("payment_success/{orderId}/{eta}/{amount}") { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+            val eta = backStackEntry.arguments?.getString("eta") ?: ""
+            val amount = backStackEntry.arguments?.getString("amount") ?: ""
+
+            PaymentSuccessScreen(
+                orderId = orderId,
+                etaText = eta,
+                amount = amount,
+                onBackToHome = {
+                    navController.navigate("select_shop") {
+                        popUpTo("select_shop") { inclusive = true }
+                    }
                 }
             )
         }
