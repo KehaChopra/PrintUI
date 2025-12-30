@@ -53,7 +53,7 @@ fun PrintAppNavigation() {
                     navController.navigate("payment_success/$orderId/$eta/$amount")
                 },
                 onHistoryClick = {
-                    // TODO: Navigate to history screen when implemented
+                    navController.navigate("order_history")
                 }
             )
         }
@@ -72,6 +72,16 @@ fun PrintAppNavigation() {
                     navController.navigate("select_shop") {
                         popUpTo("select_shop") { inclusive = true }
                     }
+                }
+            )
+        }
+
+        /* ---------- SCREEN 4 : ORDER HISTORY ---------- */
+        composable("order_history") {
+            OrderHistoryScreen(
+                onBack = { navController.popBackStack() },
+                onReprint = {
+                    navController.navigate("select_shop")
                 }
             )
         }
